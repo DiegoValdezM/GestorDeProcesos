@@ -6,7 +6,7 @@ name: Build and deploy Node.js app to Azure Web App - procesos-service
 on:
   push:
     branches:
-      - main
+      - main # O la rama principal de tu repositorio (ej. master)
   workflow_dispatch:
 
 jobs:
@@ -21,22 +21,27 @@ jobs:
       - name: Set up Node.js version
         uses: actions/setup-node@v3
         with:
-          node-version: '20.x'
+          node-version: '20' # Asegúrate que coincida con tu versión de Node en Azure
 
-      - name: npm install, build, and test
+      - name: npm install, build, and test # Paso de instalación y prueba
         run: |
+          cd gestor-procesos-backend/services/procesos-service  # <-- ¡CAMBIO CLAVE AQUÍ! Navega a la carpeta del microservicio
           npm install
           npm run build --if-present
           npm run test --if-present
 
-      - name: Zip artifact for deployment
-        run: zip release.zip ./* -r
+      - name: Zip artifact for deployment # Paso para crear el zip del código
+        run: |
+          # Aseguramos que el zip se cree SOLO con el contenido del microservicio
+          cd gestor-procesos-backend/services/procesos-service # <-- ¡Navega de nuevo para zipear lo correcto!
+          zip -r release.zip . # Zipea todo el contenido de la carpeta actual (el microservicio)
+          mv release.zip ../../../release.zip # Mueve el zip a la raíz del workspace para que 'upload-artifact' lo encuentre
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
         with:
           name: node-app
-          path: release.zip
+          path: release.zip # La ruta es relativa a la raíz del workspace de GitHub Actions
 
   deploy:
     runs-on: ubuntu-latest
@@ -44,7 +49,10 @@ jobs:
     environment:
       name: 'Production'
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
-    
+    permissions:
+      id-token: write #This is required for requesting the JWT
+      contents: read #This is required for actions/checkout
+
     steps:
       - name: Download artifact from build job
         uses: actions/download-artifact@v4
@@ -54,11 +62,17 @@ jobs:
       - name: Unzip artifact for deployment
         run: unzip release.zip
       
+      - name: Login to Azure
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }} # Reemplaza estos con tus secretos de cliente/tenant/sub
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
       - name: 'Deploy to Azure Web App'
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v3
         with:
-          app-name: 'procesos-service'
+          app-name: 'procesos-service' # <-- ¡IMPORTANTE! Nombre exacto de tu App Service en Azure
           slot-name: 'Production'
-          package: .
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_B9AF37B4A4CA431798E5AF2C40D6B2CD }}
+          package: . # <-- ¡MUY IMPORTANTE! Apunta a la raíz del artefacto zipeado, que ahora es solo el microservicio
