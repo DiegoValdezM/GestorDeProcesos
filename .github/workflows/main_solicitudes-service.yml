@@ -61,4 +61,4 @@ jobs:
           app-name: 'solicitudes-service'
           slot-name: 'Production'
           package: .
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_52EAAB07F44F45C2AE70DB552C8486C5 }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_45708312ED2344A8B507AAF59106D87B }}
