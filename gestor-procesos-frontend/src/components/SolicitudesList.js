@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import { jwtDecode } from 'jwt-decode'; // Asegúrate de que esta importación sea correcta
+import { jwtDecode } from 'jwt-decode';
 
 const SolicitudesList = () => {
     const [solicitudes, setSolicitudes] = useState([]);
@@ -19,7 +19,7 @@ const SolicitudesList = () => {
         // Decodificar el token para obtener el rol del usuario
         try {
             const decodedToken = jwtDecode(token);
-            setUserRole(decodedToken.rol); // <-- ¡ESTO ES LO QUE FALTABA O ESTABA FUERA!
+            setUserRole(decodedToken.rol);
         } catch (decodeError) {
             console.error('Error al decodificar token:', decodeError);
             localStorage.removeItem('token'); // Token inválido o expirado
@@ -29,7 +29,7 @@ const SolicitudesList = () => {
 
         const fetchSolicitudes = async () => {
             try {
-                const response = await axios.get('http://localhost:3001/solicitudes', {
+                const response = await axios.get(`${process.env.REACT_APP_SOLICITUDES_API_URL}/solicitudes`, {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },
@@ -82,7 +82,6 @@ const SolicitudesList = () => {
         {solicitudes.length === 0 ? (
             <p>No hay solicitudes para mostrar. ¡Crea una nueva!</p>
         ) : (
-            // --- INICIO DEL CAMBIO: Envolvemos la tabla en un div con scroll ---
             <div style={styles.tableWrapper}>
                 <table style={styles.table}>
                     <thead>
@@ -143,10 +142,7 @@ const SolicitudesList = () => {
 const styles = {
     container: {
         padding: '20px',
-        // Aumenta el ancho máximo del contenedor principal.
-        // Puedes probar con 1400px, 1600px, o incluso 'auto' si quieres que se adapte al 100% de la ventana.
-        // Para una pantalla grande, 'auto' puede ser una buena opción.
-        maxWidth: '1400px', // O prueba con 'auto' o un valor más alto si sigue saliendo la barra
+        maxWidth: '1400px',
         margin: '20px auto',
         backgroundColor: '#fff',
         borderRadius: '8px',
@@ -168,33 +164,28 @@ const styles = {
         fontSize: '14px',
     },
     tableWrapper: {
-        // Mantener overflowX: 'auto' como fallback por si la pantalla es muy pequeña
-        // o si alguna columna es excepcionalmente ancha.
         overflowX: 'auto', 
         width: '100%',
         border: '1px solid #ddd',
         borderRadius: '8px',
     },
     table: {
-        // Eliminar minWidth para que la tabla se ajuste al contenido o al 100% de su contenedor.
-        // Aseguramos que ocupe el 100% del ancho disponible en tableWrapper.
         width: '100%', 
         borderCollapse: 'collapse',
-        marginTop: '0px', // Asegúrate de que no haya un margen superior si está dentro de tableWrapper
+        marginTop: '0px', 
     },
     th: {
         border: '1px solid #ddd',
         padding: '10px',
         textAlign: 'left',
         backgroundColor: '#f2f2f2',
-        whiteSpace: 'nowrap', // <-- ¡NUEVO! Evita que los textos de la cabecera se rompan
+        whiteSpace: 'nowrap', 
     },
     td: {
         border: '1px solid #ddd',
         padding: '10px',
         textAlign: 'left',
-        wordBreak: 'break-word', // <-- ¡NUEVO! Rompe palabras largas para que se ajusten a la celda
-        // minWidth: '80px', // Opcional: Puedes usar esto para dar un ancho mínimo a celdas con poco contenido
+        wordBreak: 'break-word', 
     },
     tr: {
         cursor: 'pointer',

@@ -9,7 +9,7 @@ const [email, setEmail] = useState('');
 const [password, setPassword] = useState('');
 const [message, setMessage] = useState('');
 const [error, setError] = useState('');
-const [registrationSuccess, setRegistrationSuccess] = useState(false); // Nuevo estado
+const [registrationSuccess, setRegistrationSuccess] = useState(false); 
 const navigate = useNavigate();
 
 const handleSubmit = async (e) => {
@@ -19,7 +19,7 @@ const handleSubmit = async (e) => {
 
     try {
         const rol = 'normal';
-        const response = await axios.post('http://localhost:3002/auth/register', {
+        const response = await axios.post(`${process.env.REACT_APP_AUTH_API_URL}/auth/register`, {
             nombre,
             email,
             password,

@@ -21,6 +21,19 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
+  "homepage": "./",
+  "env": {
+    "development": {
+      "REACT_APP_AUTH_API_URL": "http://localhost:3002",
+      "REACT_APP_SOLICITUDES_API_URL": "http://localhost:3001",
+      "REACT_APP_PROCESOS_API_URL": "http://localhost:3003"
+    },
+    "production": {
+      "REACT_APP_AUTH_API_URL": "backendauth-afdgfwaxdwaddkdw.eastus2-01.azurewebsites.net",
+      "REACT_APP_SOLICITUDES_API_URL": "solicitudes-service-gsc7fte3fnfucncz.eastus2-01.azurewebsites.net",
+      "REACT_APP_PROCESOS_API_URL": "procesos-service-fbdyh0hqd4hsefgk.eastus2-01.azurewebsites.net"
+    }
+  },
   "eslintConfig": {
     "extends": [
       "react-app",

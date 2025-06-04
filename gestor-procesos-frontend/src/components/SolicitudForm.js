@@ -21,16 +21,15 @@ const SolicitudForm = () => {
             return;
         }
 
-        // Usamos FormData porque vamos a enviar un archivo (multipart/form-data)
+        
         const formData = new FormData();
         formData.append('descripcion', descripcion);
         formData.append('tipo_area', tipoArea);
         if (adjunto) {
-            formData.append('adjunto', adjunto); // 'adjunto' debe coincidir con el nombre del campo en Multer
+            formData.append('adjunto', adjunto); 
         }
 
         try {
-            // Asegúrate de que la URL apunte a tu solicitudes-service (puerto 3001)
             const response = await axios.post('http://localhost:3001/solicitudes', formData, {
                 headers: {
                     Authorization: `Bearer ${token}`,
@@ -43,7 +42,7 @@ const SolicitudForm = () => {
             setDescripcion('');
             setTipoArea('');
             setAdjunto(null);
-            // Opcional: redirigir a la lista de solicitudes después de un tiempo
+            // redirigir a la lista de solicitudes después de un tiempo
             setTimeout(() => navigate('/solicitudes'), 2000);
         } catch (err) {
             console.error('Error al crear solicitud:', err);
@@ -99,7 +98,7 @@ const SolicitudForm = () => {
     );
 };
 
-// Estilos básicos (puedes moverlos a un archivo CSS si lo prefieres)
+
 const styles = {
     container: {
         display: 'flex',

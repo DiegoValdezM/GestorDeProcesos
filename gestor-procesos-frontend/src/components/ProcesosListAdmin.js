@@ -17,13 +17,11 @@ const ProcesosListAdmin = () => {
                 return;
             }
 
-            // Verificar rol en el frontend (aunque el backend también lo hará)
             try {
                 const decodedToken = jwtDecode(token);
                 if (decodedToken.rol !== 'admin' && decodedToken.rol !== 'evaluador') {
                     setError('Acceso denegado. Se requieren privilegios de administrador o evaluador.');
                     setLoading(false);
-                    // Opcional: redirigir a una página de "Acceso Denegado" o al listado de solicitudes
                     navigate('/solicitudes'); // Redirigir a solicitudes si no tiene rol adecuado
                     return;
                 }
@@ -37,7 +35,7 @@ const ProcesosListAdmin = () => {
 
             try {
                 // Petición GET a tu procesos-service para obtener TODOS los procesos
-                const response = await axios.get('http://localhost:3003/procesos', {
+                const response = await axios.get(`${process.env.REACT_APP_PROCESOS_API_URL}/procesos`, {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },
@@ -46,7 +44,7 @@ const ProcesosListAdmin = () => {
                 // Para cada proceso, intentar obtener el folio y descripción de la solicitud padre
                 const procesosConSolicitudInfo = await Promise.all(response.data.map(async (proceso) => {
                     try {
-                        const solicitudResponse = await axios.get(`http://localhost:3001/solicitudes/${proceso.id_solicitud}`, {
+                        const solicitudResponse = await axios.get(`${process.env.REACT_APP_SOLICITUDES_API_URL}/solicitudes/${proceso.id_solicitud}`, {
                             headers: { Authorization: `Bearer ${token}` },
                         });
                         return {
@@ -82,7 +80,7 @@ const ProcesosListAdmin = () => {
         };
 
         fetchProcesos();
-    }, [navigate]); // navigate como dependencia
+    }, [navigate]);
 
     const handleLogout = () => {
         localStorage.removeItem('token');
@@ -154,7 +152,6 @@ const ProcesosListAdmin = () => {
     );
 };
 
-// Estilos básicos (puedes moverlos a un archivo CSS si lo prefieres)
 const styles = {
     container: {
         padding: '20px',
@@ -195,9 +192,7 @@ const styles = {
         padding: '10px',
         textAlign: 'left',
     },
-    // Eliminado el '&:nth-child(even)' de aquí. Si quieres filas alternas, añádelo a index.css con una clase.
     tr: { 
-        // cursor: 'pointer', // No es clicable en esta vista, por lo que no necesita cursor:pointer
     },
     loadingContainer: {
         display: 'flex',
@@ -215,17 +210,16 @@ const styles = {
         fontSize: '1.2em',
         color: 'red',
     },
-    backToListButton: { // <-- ¡NUEVO ESTILO!
+    backToListButton: {
         padding: '10px 15px',
-        backgroundColor: '#007bff', /* Un azul, puedes elegir otro color */
+        backgroundColor: '#007bff',
         color: 'white',
         border: 'none',
         borderRadius: '4px',
         cursor: 'pointer',
         fontSize: '14px',
-        marginRight: '10px', /* Espacio entre este botón y el de cerrar sesión */
+        marginRight: '10px',
     },
-    // ... (asegúrate de que los estilos 'createButton' no estén duplicados si no se usan aquí) ...
 };
 
 export default ProcesosListAdmin;

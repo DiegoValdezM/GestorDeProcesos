@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react'; // <-- Añade useCallback aquí
+import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import { useParams, useNavigate } from 'react-router-dom';
 import { jwtDecode } from 'jwt-decode';
@@ -29,7 +29,7 @@ const SolicitudDetail = () => {
     const [creatingProceso, setCreatingProceso] = useState(false);
 
     // Envuelve fetchData en useCallback
-    const fetchData = useCallback(async () => { // <-- CAMBIO AQUÍ: Añade useCallback
+    const fetchData = useCallback(async () => {
         setLoading(true);
         setRequestError('');
         setToastMessage('');
@@ -52,7 +52,7 @@ const SolicitudDetail = () => {
 
         try {
             // 1. Obtener detalles de la solicitud
-            const solicitudResponse = await axios.get(`http://localhost:3001/solicitudes/${id}`, {
+            const solicitudResponse = await axios.get(`${process.env.REACT_APP_SOLICITUDES_API_URL}/solicitudes/${id}`, {
                 headers: { Authorization: `Bearer ${token}` },
             });
             setSolicitud(solicitudResponse.data);
@@ -69,7 +69,7 @@ const SolicitudDetail = () => {
             }
 
             // 2. Obtener procesos vinculados a esta solicitud
-            const procesosResponse = await axios.get(`http://localhost:3003/procesos?idSolicitud=${id}`, {
+            const procesosResponse = await axios.get(`${process.env.REACT_APP_PROCESOS_API_URL}/procesos?idSolicitud=${id}`, {
                 headers: { Authorization: `Bearer ${token}` },
             });
             setProcesos(procesosResponse.data);
@@ -88,11 +88,11 @@ const SolicitudDetail = () => {
         } finally {
             setLoading(false);
         }
-    }, [id, navigate]); // Dependencias de useCallback. Asegúrate de que todas las variables usadas en fetchData estén aquí.
+    }, [id, navigate]); 
 
     useEffect(() => {
         fetchData();
-    }, [fetchData]); // <-- CAMBIO AQUÍ: Añade fetchData como dependencia
+    }, [fetchData]);
 
     // Función para manejar el cambio de estatus
     const handleStatusChange = async () => {
@@ -103,8 +103,7 @@ const SolicitudDetail = () => {
         const aprobadoPorId = jwtDecode(token).id;
 
         try {
-            const response = await axios.put(
-                `http://localhost:3001/solicitudes/${solicitud.id}/estado`,
+            const response = await axios.put(`${process.env.REACT_APP_SOLICITUDES_API_URL}/solicitudes/${solicitud.id}/estado`,
                 {
                     nuevoEstatus: newStatus,
                     aprobadoPorId: (newStatus === 'Aprobada' || newStatus === 'Rechazada' || newStatus === 'En Proceso' || newStatus === 'Finalizada') ? aprobadoPorId : null,
@@ -167,8 +166,7 @@ const SolicitudDetail = () => {
         }
 
         try {
-            // CAMBIO AQUÍ: Eliminamos la asignación a 'response' si no se usa
-            await axios.post('http://localhost:3003/procesos', Object.fromEntries(formData), { 
+            await axios.post(`${process.env.REACT_APP_PROCESOS_API_URL}/procesos`, Object.fromEntries(formData), { 
                 headers: {
                     Authorization: `Bearer ${token}`,
                     'Content-Type': 'application/json',
@@ -343,7 +341,7 @@ const SolicitudDetail = () => {
                     </table>
                 )}
 
-                {/* --- SECCIÓN PARA AÑADIR NUEVO PROCESO (SOLO PARA ADMIN/EVALUADOR) --- */}
+                {/* --- SECCIÓN PARA AÑADIR NUEVO PROCESO (SOLO PARA ADMIN --- */}
                 {canUpdateStatus && (
                     <div style={styles.addProcesoSection}>
                         <h4>Añadir Nuevo Proceso</h4>
@@ -391,7 +389,6 @@ const SolicitudDetail = () => {
     );
 };
 
-// Estilos (actualizados con nuevos elementos)
 const styles = {
     container: {
         padding: '20px',
@@ -471,13 +468,12 @@ const styles = {
         fontSize: '1.2em',
         color: '#888',
     },
-    // --- ESTILOS PARA LA SECCIÓN DE ESTATUS Y NUEVOS PARA AÑADIR PROCESO ---
     statusUpdateSection: {
         marginTop: '30px',
         paddingTop: '20px',
         borderTop: '1px solid #eee',
     },
-    addProcesoSection: { // <-- NUEVO ESTILO
+    addProcesoSection: {
         marginTop: '30px',
         paddingTop: '20px',
         borderTop: '1px solid #eee',
@@ -497,7 +493,7 @@ const styles = {
         borderRadius: '4px',
         boxSizing: 'border-box',
     },
-    input: { // Reutilizado de otros formularios, asegúrate de que esté aquí
+    input: {
         width: '100%',
         padding: '10px',
         border: '1px solid #ddd',
@@ -512,7 +508,7 @@ const styles = {
         boxSizing: 'border-box',
         resize: 'vertical',
     },
-    fileInput: { // Reutilizado de SolicitudForm
+    fileInput: {
         width: '100%',
         padding: '10px 0',
     },
@@ -526,9 +522,9 @@ const styles = {
         fontSize: '14px',
         marginTop: '10px',
     },
-    createProcesoButton: { // <-- NUEVO ESTILO
+    createProcesoButton: { 
         padding: '10px 15px',
-        backgroundColor: '#28a745', // Verde
+        backgroundColor: '#28a745',
         color: 'white',
         border: 'none',
         borderRadius: '4px',
@@ -536,7 +532,6 @@ const styles = {
         fontSize: '14px',
         marginTop: '10px',
     },
-    // ------------------------------------------------
 };
 
 export default SolicitudDetail;

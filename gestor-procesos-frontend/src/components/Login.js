@@ -15,7 +15,7 @@ const Login = () => {
         try {
             // Haz la petición POST a tu auth-service
             // Asegúrate de que la URL sea correcta (el puerto 3002 de tu auth-service)
-            const response = await axios.post('http://localhost:3002/auth/login', {
+            const response = await axios.post(`${process.env.REACT_APP_AUTH_API_URL}/auth/login`, {
                 email,
                 password,
             });
@@ -75,7 +75,6 @@ const Login = () => {
     );
 };
 
-// Estilos básicos (puedes moverlos a un archivo CSS si lo prefieres)
 const styles = {
     container: {
         display: 'flex',
@@ -119,18 +118,18 @@ const styles = {
         cursor: 'pointer',
         fontSize: '16px',
         transition: 'background-color 0.3s ease',
-        marginBottom: '15px', // Añadido margen para separar del enlace
+        marginBottom: '15px',
     },
     errorText: {
         color: 'red',
         marginBottom: '15px',
     },
-    linkText: { // Estilos para el texto del enlace
+    linkText: {
         marginTop: '10px',
         fontSize: '14px',
         color: '#555',
     },
-    link: { // Estilos para el enlace en sí
+    link: {
         color: '#007bff',
         textDecoration: 'none',
         fontWeight: 'bold',
