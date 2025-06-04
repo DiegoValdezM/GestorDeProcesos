@@ -29,6 +29,10 @@ jobs:
           app_location: "/gestor-procesos-frontend"
           api_location: ""
           output_location: "build"
+        env: # Add this section to define environment variables
+          REACT_APP_AUTH_API_URL: ${{ secrets.REACT_APP_AUTH_API_URL }}
+          REACT_APP_PROCESOS_API_URL: ${{ secrets.REACT_APP_PROCESOS_API_URL }}
+          REACT_APP_SOLICITUDES_API_URL: ${{ secrets.REACT_APP_SOLICITUDES_API_URL }}
 
   close_pull_request_job:
     if: github.event_name == 'pull_request' && github.event.action == 'closed'
