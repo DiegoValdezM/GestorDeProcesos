@@ -1,5 +1,7 @@
 # Gestor de Procesos Empresariales
 
+LINK AZURE: https://polite-coast-0eb431f0f.6.azurestaticapps.net/
+
 ## Descripción General
 
 Este proyecto es un sistema web diseñado para registrar, administrar y dar seguimiento a solicitudes operativas dentro de una organización. Permite a los usuarios crear solicitudes formales que son evaluadas y aprobadas por un departamento de procesos, las cuales pueden derivar en uno o varios procesos específicos para su atención y resolución. La aplicación se construye con una arquitectura de microservicios, utilizando Node.js para el backend y React para el frontend, y se despliega en Azure.
