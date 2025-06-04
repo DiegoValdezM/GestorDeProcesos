@@ -21,7 +21,7 @@ jobs:
       - name: Set up Node.js version
         uses: actions/setup-node@v3
         with:
-          node-version: '20' # Asegúrate que coincida con tu versión de Node en Azure
+          node-version: '20.x' # Asegúrate que coincida con tu versión de Node en Azure
 
       - name: npm install, build, and test # Paso de instalación y prueba
         run: |
