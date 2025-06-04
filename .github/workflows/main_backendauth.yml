@@ -1,12 +1,12 @@
 # Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
 # More GitHub Actions for Azure: https://github.com/Azure/actions
 
-name: Build and deploy Node.js app to Azure Web App - backendAuth
+name: Build and deploy Node.js app to Azure Web App - backendAuth # Asegúrate que el nombre coincida con tu App Service
 
 on:
   push:
     branches:
-      - main
+      - main # O la rama principal de tu repositorio (ej. master)
   workflow_dispatch:
 
 jobs:
@@ -21,16 +21,20 @@ jobs:
       - name: Set up Node.js version
         uses: actions/setup-node@v3
         with:
-          node-version: '20.x'
+          node-version: '20.x' # Asegúrate que coincida con tu versión de Node en Azure
 
       - name: npm install, build, and test
         run: |
+          cd gestor-procesos-backend/services/auth-service  # <-- ¡CAMBIO CLAVE AQUÍ!
           npm install
           npm run build --if-present
           npm run test --if-present
 
       - name: Zip artifact for deployment
-        run: zip release.zip ./* -r
+        run: |
+          cd gestor-procesos-backend/services/auth-service # <-- Asegúrate de que zipee desde aquí
+          zip -r release.zip . # Zipea el contenido de la carpeta del servicio
+          mv release.zip ../../../release.zip # Mueve el zip a la raíz del workspace para upload-artifact
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
@@ -44,7 +48,10 @@ jobs:
     environment:
       name: 'Production'
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
-    
+    permissions:
+      id-token: write #This is required for requesting the JWT
+      contents: read #This is required for actions/checkout
+
     steps:
       - name: Download artifact from build job
         uses: actions/download-artifact@v4
@@ -54,11 +61,17 @@ jobs:
       - name: Unzip artifact for deployment
         run: unzip release.zip
       
+      - name: Login to Azure
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }} 
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
       - name: 'Deploy to Azure Web App'
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v3
         with:
-          app-name: 'backendAuth'
+          app-name: 'backendAuth' # <-- ¡IMPORTANTE! Nombre EXACTO de tu App Service para AUTH
           slot-name: 'Production'
           package: .
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_47E53E2F97F44C3890EF42F91342DB72 }}
