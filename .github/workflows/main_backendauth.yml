@@ -62,10 +62,10 @@ jobs:
         run: unzip release.zip
       
       - name: Login to Azure
-        uses: azure/login@v2 # O @v1, ya que 'creds' funciona con ambas
+        uses: azure/login@v2
         with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }} 
-          auth-type: 'SPN' 
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+          auth-type: 'SERVICE_PRINCIPAL' # <-- ¡CORREGIDO! Cambia 'SPN' por 'SERVICE_PRINCIPAL'
 
       - name: 'Deploy to Azure Web App'
         id: deploy-to-webapp
