@@ -1,0 +1,64 @@
+/* Estilos básicos para el cuerpo de la página */
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: #f0f2f5; /* Color de fondo general, si lo deseas */
+  color: #333; /* Color de texto por defecto */
+}
+
+/* Estilos para el elemento raíz de tu aplicación React */
+#root {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start; /* Alinea arriba para que los formularios no estén siempre centrados verticalmente */
+  min-height: 100vh; /* Ocupa al menos toda la altura de la ventana */
+}
+
+/* Estilos para el código */
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+/* ------------------------------------------------------------- */
+/* ESTILOS ESPECÍFICOS PARA EL PROYECTO (hover de solicitudes) */
+/* ------------------------------------------------------------- */
+
+/* Estilos para el efecto hover en las filas de la tabla de solicitudes */
+/* Asegúrate de que el <tr> en SolicitudesList.js tenga className="solicitud-row" */
+.solicitud-row:hover {
+    background-color: #e0e0e0; /* Un gris claro para el hover */
+    cursor: pointer;          /* Cambia el cursor para indicar que es clicable */
+    transition: background-color 0.3s ease; /* Transición suave para el cambio de color */
+}
+
+/* Estilos para la tabla en general si necesitas un reset o ajustes */
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+/* Ajustes para las celdas de la tabla para que se vean bien */
+th, td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
+}
+
+th {
+  background-color: #f2f2f2;
+}
+
+/* Animaciones para ToastMessage */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateX(-50%) translateY(20px); }
+    to { opacity: 1; transform: translateX(-50%) translateY(0px); } /* Cambiado de 20px a 0px para no subir al aparecer */
+}
+@keyframes fadeOut {
+    from { opacity: 1; transform: translateX(-50%) translateY(0px); }
+    to { opacity: 0; transform: translateX(-50%) translateY(20px); } /* Cambiado a 20px para bajar al desaparecer */
+}
